@@ -3,8 +3,6 @@ from database import DatabaseManager
 from logger import setup_logger, log_error
 
 def main():
-    """Função principal que inicia a aplicação."""
-    
     setup_logger()
 
     DB_CONFIG = {
@@ -18,20 +16,20 @@ def main():
     try:
         db_manager = DatabaseManager(**DB_CONFIG)
         if not db_manager.connect():
-            print("Falha ao conectar ao banco de dados. Verifique error.log para detalhes.")
+            print("Falha ao conectar ao banco de dados")
             return
 
-        # Inicia a interface gráfica
         app = LoginWindow(db_manager)
         app.mainloop()
 
     except Exception as e:
         log_error(e)
-        print(f"Ocorreu um erro inesperado. Verifique error.log para detalhes.")
+        print(f"Erro! Verifique error.log para detalhes.")
 
     finally:
         if db_manager:
             db_manager.disconnect()
 
 if __name__ == "__main__":
+
     main()
