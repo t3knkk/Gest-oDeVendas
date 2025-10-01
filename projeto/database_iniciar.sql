@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL
 );
 
--- NOVA TABELA DE CLIENTES
 CREATE TABLE IF NOT EXISTS clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -31,6 +30,5 @@ CREATE TABLE IF NOT EXISTS sales (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
--- Limpa a tabela para evitar duplicatas e insere o usuário padrão
 TRUNCATE TABLE users;
 INSERT INTO users (username, password) VALUES ('admin', 'admin123');
