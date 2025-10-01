@@ -4,7 +4,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class LoginWindow(tk.Tk):
-    """Janela de Login."""
     def __init__(self, db_manager):
         super().__init__()
         self.db_manager = db_manager
@@ -42,7 +41,6 @@ class LoginWindow(tk.Tk):
             messagebox.showerror("Erro de Login", "Usuário ou senha inválidos.")
 
 class MainWindow(tk.Tk):
-    """Janela Principal da Aplicação."""
     def __init__(self, db_manager):
         super().__init__()
         self.db_manager = db_manager
@@ -158,19 +156,22 @@ class MainWindow(tk.Tk):
         self.sales_tree.heading("Quantidade", text="Quantidade"); self.sales_tree.heading("Data", text="Data da Venda")
         self.sales_tree.column("ID", width=60); self.sales_tree.pack(expand=True, fill='both')
 
-    # --- UI DO GRÁFICO ---
+
+
+    
     def setup_graph_ui(self):
         btn_generate = tk.Button(self.graph_frame, text="Gerar/Atualizar Gráfico de Vendas", command=self.plot_sales_graph)
         btn_generate.pack(pady=20)
         self.canvas_frame = ttk.Frame(self.graph_frame)
         self.canvas_frame.pack(expand=True, fill='both')
 
-    # --- LÓGICA DE PRODUTOS ---
+
+
+    
     def load_products(self):
         for item in self.product_tree.get_children(): self.product_tree.delete(item)
         products = self.db_manager.fetch_all("SELECT * FROM products ORDER BY name")
         for p in products: self.product_tree.insert("", "end", values=(p['id'], p['name'], p['price'], p['stock']))
-        # Atualiza a combobox de vendas
         self.sale_product_combo['values'] = [p['name'] for p in products]
 
     def add_product(self):
@@ -208,7 +209,9 @@ class MainWindow(tk.Tk):
         self.product_id_entry.delete(0, 'end'); self.product_name_entry.delete(0, 'end')
         self.product_price_entry.delete(0, 'end'); self.product_stock_entry.delete(0, 'end')
 
-    # --- LÓGICA DE CLIENTES ---
+
+
+    
     def load_clients(self):
         for item in self.client_tree.get_children(): self.client_tree.delete(item)
         clients = self.db_manager.fetch_all("SELECT * FROM clients ORDER BY name")
@@ -248,7 +251,9 @@ class MainWindow(tk.Tk):
         self.client_id_entry.delete(0, 'end'); self.client_name_entry.delete(0, 'end')
         self.client_email_entry.delete(0, 'end'); self.client_phone_entry.delete(0, 'end')
 
-    # --- LÓGICA DE VENDAS ---
+
+
+    
     def load_sales(self):
         for item in self.sales_tree.get_children(): self.sales_tree.delete(item)
         query = """
@@ -268,13 +273,11 @@ class MainWindow(tk.Tk):
         try: quantity = int(quantity_str)
         except ValueError: messagebox.showerror("Erro", "Quantidade deve ser um número inteiro."); return
 
-        # Buscar ID e estoque do produto
         product = self.db_manager.fetch_one("SELECT id, stock FROM products WHERE name = %s", (product_name,))
         if not product: messagebox.showerror("Erro", "Produto não encontrado."); return
         
         if product['stock'] < quantity: messagebox.showerror("Estoque Insuficiente", f"Estoque disponível: {product['stock']}"); return
 
-        # Inserir venda e atualizar estoque
         sale_query = "INSERT INTO sales (product_id, quantity) VALUES (%s, %s)"
         stock_query = "UPDATE products SET stock = stock - %s WHERE id = %s"
         
@@ -283,7 +286,7 @@ class MainWindow(tk.Tk):
             messagebox.showinfo("Sucesso", "Venda registrada com sucesso!")
             self.sale_quantity_entry.delete(0, 'end')
             self.sale_product_combo.set('')
-            self.load_sales(); self.load_products() # Recarrega produtos para mostrar novo estoque
+            self.load_sales(); self.load_products() 
         else:
             messagebox.showerror("Erro", "Falha ao registrar a venda. A transação foi revertida.")
 
@@ -308,4 +311,5 @@ class MainWindow(tk.Tk):
 
         canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
         canvas.draw()
+
         canvas.get_tk_widget().pack(expand=True, fill='both')
